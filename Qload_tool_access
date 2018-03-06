@@ -1,0 +1,25 @@
+#!/bin/sh
+set -x
+usage () {
+echo "Usage: $1 QMGR name,$2 Group name, $3 profile name for App Qs, $4 ENV"
+ exit 1
+}
+
+if [ $# != 4 ]
+then usage
+
+else
+
+if [ "$4" = "PROD" ]
+then 
+exit 1
+else
+
+#inq=Read,put=Write,set=Execute
+setmqaut -m $1 -t qmgr -g $2 +dsp +inq +connect +setall
+setmqaut -m $1 -t q -n "$3" -g $2 +setall +browse +inq +get +put +clear +dsp
+echo "refreshing the QMGR:'$1' security for changes to take effect"
+echo "refresh security"|runmqsc $1 |grep AMQ8560
+fi
+fi
+

@@ -1,0 +1,119 @@
+#!/bin/sh
+#
+#Initial Draft - Nagi R Guntaka 12/17/14
+#This will set the environment for QMGR you are working on 
+#
+#set -x
+QMGR=$1
+usage() {
+echo "usage: you should be providing the QMGR you are working on"
+}
+if [ "$#" != 1 ]
+then
+   echo " you can only work on one installation/QMGR"
+   usage
+else 
+case "$QMGR" in
+ "COMDEVQM1" )
+    . /opt/CT1mq/bin/setmqenv -s 
+	echo here
+  ;;        
+ "COMQAQM1" )
+    . /opt/CT1QAmq/bin/setmqenv -s 
+  ;;        
+ "COMDEVQM2" )
+    . /opt/CT2mq/bin/setmqenv -s 
+  ;;        
+ "COMQAQM2" )
+    . /opt/CT2QAmq/bin/setmqenv -s 
+  ;;        
+ "EQCDEVQM1" )
+    . /opt/EQCmq/bin/setmqenv -s 
+  ;;        
+ "EQCQAQM1" )
+    . /opt/EQCQAmq/bin/setmqenv -s 
+  ;;        
+ "EVPDEVQM1" )
+    . /opt/EVPmq/bin/setmqenv -s 
+  ;;        
+ "EVPQAQM1" )
+    . /opt/EVPQAmq/bin/setmqenv -s 
+  ;;        
+ "JIDEVQM1" )
+    . /opt/JImq/bin/setmqenv -s 
+  ;;        
+ "JIQAQM1" )
+    . /opt/JIQAmq/bin/setmqenv -s 
+  ;;        
+ "PTADEVQM1" )
+    . /opt/PTAmq/bin/setmqenv -s 
+  ;;        
+ "PTAQAQM1" )
+    . /opt/PTAQAmq/bin/setmqenv -s 
+  ;;        
+ "CPSDEVQM1" )
+    . /opt/CPSmq/bin/setmqenv -s 
+  ;;        
+ "CPSQAQM1" )
+    . /opt/CPSQAmq/bin/setmqenv -s 
+  ;;        
+ "TPLDEVQM1" )
+    . /opt/TPLmq/bin/setmqenv -s 
+  ;;        
+ "TPLQAQM1" )
+    . /opt/TPLQAmq/bin/setmqenv -s 
+  ;;        
+ "WBLDEVQM1" )
+    . /opt/WBLmq/bin/setmqenv -s 
+  ;;        
+ "WBLQAQM1" )
+    . /opt/WBLQAmq/bin/setmqenv -s 
+  ;;        
+ "STBDEVQM1" )
+    . /opt/STBmq/bin/setmqenv -s 
+  ;;        
+ "STBQAQM1" )
+    . /opt/STBQAmq/bin/setmqenv -s 
+  ;;        
+ "MISDEVQM1" )
+    . /opt/REHmq/bin/setmqenv -s 
+  ;;        
+ "MISQAQM1" )
+    . /opt/REHQAmq/bin/setmqenv -s 
+  ;;        
+ "MFADEVQM1" )
+    . /opt/EPPmq/bin/setmqenv -s 
+  ;;        
+ "MFAQAQM1" )
+    . /opt/EPPQAmq/bin/setmqenv -s 
+  ;;        
+ "RMSDEVQM1" )
+    . /opt/RMSmq/bin/setmqenv -s 
+  ;;        
+ "RMSQAQM1" )
+    . /opt/RMSQAmq/bin/setmqenv -s 
+  ;;        
+ "FTPDEVQM1" )
+    . /opt/FTPmq/bin/setmqenv -s 
+  ;;        
+ "FTPQAQM1" )
+    . /opt/FTPQAmq/bin/setmqenv -s 
+  ;;        
+ "FSDEVQM1" )
+    . /opt/FSmq/bin/setmqenv -s 
+  ;;        
+ "FSQAQM1" )
+    . /opt/FSQAmq/bin/setmqenv -s 
+  ;;        
+ "AHSDEVQM1" )
+    . /opt/AHSmq/bin/setmqenv -s 
+  ;;        
+ "AHSQAQM1" )
+    . /opt/AHSQAmq/bin/setmqenv -s 
+  ;;        
+ *)
+    exit 1
+  ;;
+esac
+
+fi

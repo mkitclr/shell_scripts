@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+#moving the odbc.ini files to workpath dir
+#
+usage() {
+ echo "usage: you need to provide an app name for which you are trying to move"
+exit 1
+}
+if [ "$#" != 0 ]
+then 
+ for i in "$@"
+  do 
+  if  cp /opt/${i}iib/ODBC/unixodbc/odbc.ini /var/${i}/data/mqsi/
+  then
+   chown `echo $i |tr "[:upper:]" "[:lower:]"`user:mqbrkrs /var/${i}/data/mqsi/odbc.ini
+  elso echo "looks like not a valid app name ${i} or install failed"
+   exit 2
+  fi
+ done
+else
+   usage
+fi

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+
+  echo "" 
+  echo "" 
+  echo "" 
+  echo "" 
+echo "displaying number of connections opened per QMGR" 
+for i in `dspmq|cut -d ')' -f1|cut -d '(' -f2`
+
+do
+  echo $i
+  echo "dis conn(*)"|runmqsc $i|grep EXTCONN|wc -l
+  echo "" 
+
+done
+
+echo "displaying Number of threads initiated by mqm"
+
+ps -eLf|grep mqm|wc -l
+nproc=`grep -n mqm /etc/security/limits.conf|grep -n nproc|grep -n soft|awk '{ print $4}'`
+echo "The nproc limit set is $nproc"

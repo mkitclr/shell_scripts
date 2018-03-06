@@ -1,0 +1,99 @@
+group XXAPP_XXENV (
+        SystemList = { XXmachinename = 0 }
+        AutoStartList = { XXmachinename }
+        )
+
+        Application XXAPPXXMODBR1 (
+                Critical = 0
+                User = XXappXXmoduser
+                StartProgram = "/opt/XXAPPXXMODiib/bin/mqsistart XXAPPXXMODBR1"
+                StopProgram = "/opt/XXAPPXXMODiib/bin/mqsistop XXAPPXXMODBR1;/var/XXAPP/data/IIBScripts/clean_semaphores XXappXXmoduser"
+                CleanProgram = "/var/XXAPPXXMOD/data/IIBScripts/mqsiclean XXappXXmoduser XXAPPBR1 XXAPP"
+                MonitorProcesses = { "bipservice XXAPPXXMODBR1", "bipbroker XXAPPXXMODBR1",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_SEQUENCE",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_NEXTPATH",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_ILOG",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_MAIN",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_OLOG",
+                         "DataFlowEngine XXAPPXXMODBR1 XXXXXX XXAPPXXMOD_VELOCITY" }
+                EnvFile = "/var/XXAPPXXMOD/data/home/XXappXXmoduser/.profile"
+                )
+
+        Application XXAPPXXENVQM1 (
+                Critical = 0
+                User = mqm
+                StartProgram = "/opt/XXAPPXXMODmq/bin/strmqm XXAPPXXENVQM1"
+                StopProgram = "/opt/XXAPPXXMODmq/bin/endmqm -i XXAPPXXENVQM1"
+                MonitorProcesses = { "/opt/XXAPPXXMODmq/bin/amqzdmaa -m XXAPPXXENVQM1",
+                         "/opt/XXAPPXXMODmq/bin/runmqlsr -r -m XXAPPXXENVQM1 -t TCP -p XXPORT",
+                         "/opt/XXAPPXXMODmq/bin/amqpcsea XXAPPXXENVQM1",
+                         "/opt/XXAPPXXMODmq/bin/amqzmgr0 -m XXAPPXXENVQM1",
+                         "/opt/XXAPPXXMODmq/bin/amqzxma0 -m XXAPPXXENVQM1" }
+                EnvFile = "/opt/XXAPPXXMODmq/bin/setmqenv"
+                )
+
+        DiskGroup XXAPPXXMOD_dg (
+                Critical = 0
+                DiskGroup = XXAPPXXMOD_dg
+                )
+
+        IPMultiNIC iibXXenvXXappvip_mnic (
+                Critical = 0
+                Address = "XXvip"
+                MultiNICAResName = iibstddev_MNICA
+                NetMask = "255.255.254.0"
+                )
+
+        Mount var_XXAPPXXMOD_data (
+                Critical = 0
+                MountPoint = "/var/XXAPPXXMOD/data"
+                BlockDevice = "/dev/vx/dsk/XXAPPXXMOD_dg/var_XXAPPXXMOD_data"
+                FSType = vxfs
+                FsckOpt = "-y"
+                )
+
+        Mount var_XXAPPXXMOD_log (
+                Critical = 0
+                MountPoint = "/var/XXAPPXXMOD/log"
+                BlockDevice = "/dev/vx/dsk/XXAPPXXMOD_dg/var_XXAPPXXMOD_log"
+                FSType = vxfs
+                FsckOpt = "-y"
+                )
+
+        Proxy XXAPPXXMOD_Proxy (
+                TargetResName = iibstddev_MNICA
+                )
+
+        XXAPPXXMODBR1 requires XXAPPXXENVQM1
+        XXAPPXXENVQM1 requires iibXXenvXXappvip_mnic
+        XXAPPXXENVQM1 requires var_XXAPPXXMOD_data
+        XXAPPXXENVQM1 requires var_XXAPPXXMOD_log
+        iibXXenvXXappvip_mnic requires XXAPPXXMOD_Proxy
+        var_XXAPPXXMOD_data requires XXAPPXXMOD_dg
+        var_XXAPPXXMOD_log requires XXAPPXXMOD_dg
+
+
+        // resource dependency tree
+        //
+        //      group XXAPP_XXENV
+        //      {
+        //      Application XXAPPXXMODBR1
+        //          {
+        //          Application XXAPPXXENVQM1
+        //              {
+        //              IPMultiNIC iibXXenvXXappvip_mnic
+        //                  {
+        //                  Proxy XXAPPXXMOD_Proxy
+        //                  }
+        //              Mount var_XXAPPXXMOD_data
+        //                  {
+        //                  DiskGroup XXAPPXXMOD_dg
+        //                  }
+        //              Mount var_XXAPPXXMOD_log
+        //                  {
+        //                  DiskGroup XXAPPXXMOD_dg
+        //                  }
+        //              }
+        //          }
+        //      }
+

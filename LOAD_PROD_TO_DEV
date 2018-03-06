@@ -1,0 +1,17 @@
+#!/bin/sh
+#Date:03/27/2015-Initial Script-itnxg02
+Mydate=`date +%Y%m%d_%H%M%S`
+QUEUE=$1
+if [ `ls /var/tmp/FTP_PROD_TO_DEV/|wc -l` -gt "0" ]
+then
+echo "there are files under /var/tmp/FTP_PROD_TO_DEV"
+mailx -s "there should not be any files under /var/tmp/FTP_PROD_TO_DEV" nagi.guntaka@railinc.com <<EOF
+please check the previous run $0
+EOF
+exit 1
+else
+mv /var/tmp/FTP_PROD_TO_DEV/$QUEUE* /var/tmp/FTP_PROD_TO_DEV_TOBE/FTP_Q_LOAD_${Mydate}
+/home/itnxg02/support_packs/qload -m FTPBRQM1 -o $QUEUE -f /var/tmp/FTP_PROD_TO_DEV_TOBE/FTP_Q_LOAD_${Mydate}
+mv /var/tmp/FTP_PROD_TO_DEV_TOBE/FTP_Q_LOAD_${Mydate} /var/tmp/FTP_PROD_TO_DEV_TOBE_Loaded
+fi
+

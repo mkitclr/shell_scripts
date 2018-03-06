@@ -1,0 +1,15 @@
+#!/bin/sh
+#making the .profile for each app
+#
+#
+for app in "$@"
+
+do
+
+/bin/cp /var/CT1/data/home/ct1user/.profile /var/$app/data/home/`echo $app | tr "[:upper:]" "[:lower:]"`user/
+chown `echo $app | tr "[:upper:]" "[:lower:]"`user:mqbrkrs /var/$app/data/home/`echo $app | tr "[:upper:]" "[:lower:]"`user/.profile
+echo " displaying the copied .profile files"
+echo " `ls -ltr /var/$app/data/home/`echo $app | tr "[:upper:]" "[:lower:]"`user/.profile`"
+sed -i s/CT1/$app/g /var/$i/data/home/`echo $app|tr "[:upper:]" "[:lower:]"`user/.profile
+
+done

@@ -1,0 +1,23 @@
+#!/bin/sh
+#This will reset al the sender channels on the given QMGR except the SYSTEM channel
+#This will provide the status of the channel, after started
+usage () {
+echo "Usage: $1 QMGR "
+ exit 1
+}
+
+if [ $# != 1 ]
+then usage
+
+else
+
+for i in `echo "dis channel(*) chltype(SDR)"|runmqsc $1|grep CHANNEL|cut -d ')' -f1|cut -d '(' -f2|grep -v SYSTEM|grep -v MQSP`
+do
+  echo $i
+  #echo "reset channel($i) "|runmqsc $1>/dev/null
+  #echo "start channel($i)"|runmqsc $1>/dev/null
+  #sleep 10
+  #echo "dis chstatus($i) "|runmqsc $1>/var/tmp/$1
+done
+
+fi

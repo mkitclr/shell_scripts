@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+#this script does the broker install
+#
+set -x
+INSTALLDIR=$2
+
+if [ "`id|cut -d ')' -f1|cut -d '(' -f2`" != "root" ]
+then echo "you need to run this as root. Installation Failed. Exiting"
+     exit 6
+else
+ SPACE=$(df -k|grep -w / |/bin/awk '{print $3}')
+
+
+ if [ "$SPACE" -lt 1100000 ]
+  then echo "you need to have atleast 1G of space left in /tmp. you have only $SPACE available..ask RCI 1G for app"
+    echo "Install Failed. Exiting"
+    exit 1
+ else
+
+  if [ "$#" = 2 ]
+  then :
+  else echo "Need 2 arguments, APP, Software dir.. INSTALL cannot be proceeded. Exiting"
+      exit 2
+  fi
+
+ MQSI_CONTENTS=$(/bin/ls -l /var/mqsi|grep -v total|wc -l)
+ if [ $MQSI_CONTENTS = 0 ]
+ then :
+ else echo "there are contents in "/var/mqsi"...you need to make sure this directory is empty before proceeding with the install"
+      echo "cannot proceed with the Install. Install Failed. Exiting"
+      exit 3
+ fi
+ APPNAME=$1
+ if cd $INSTALLDIR
+ then :
+ else echo "couldn't find the software.INSTALL FAILED, Exiting"
+ fi
+
+
+ $INSTALLDIR/setuplinuxx64 -i silent -DLICENSE_ACCEPTED=TRUE -DUSER_INSTALL_DIR=/usr/local/opt/${APPNAME}iib
+
+ rc=$?
+
+ if [ $rc != 0 ]
+ then echo " Install Failed, Exiting.. "
+      rm -rf /tmp/install.dir*
+      exit 7
+ else echo "install succeeded "
+  rm -rf /tmp/install.dir*
+  if ls /var/mqsi/
+  then 
+      cd /var/mqsi 
+      /bin/tar -cvf ${APPNAME}_mqsi.tar *
+      mv ${APPNAME}_mqsi.tar /var/${APPNAME}/data/mqsi/
+      cd /var/${APPNAME}/data/mqsi/
+      tar -xvf ${APPNAME}_mqsi.tar
+      chown -R `echo $APPNAME |tr "[:upper:]" "[:lower:]"`user:mqbrkrs *
+      /bin/rm -rf /var/mqsi/*
+  else echo "default Data dir for Broker doesnt' exist. Install Failed. EXITING"
+      exit4
+ fi
+
+ if ls /opt/${APPNAME}iib/bin/mqsiprofile
+ then
+      sed -i "s/MQSI_WORKPATH\=\/var\/mqsi/MQSI_WORKPATH\=\/var\/$APPNAME\/data\/mqsi/g" /opt/${APPNAME}iib/bin/mqsiprofile 
+      echo "Broker Installtion for $APPNAME is successfull"
+ else echo"Install FAILED. Exiting"
+      exit 5
+ fi
+ fi
+ fi
+fi

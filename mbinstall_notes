@@ -1,0 +1,20 @@
+WARNING: /tmp does not have enough disk space!
+         Attempting to use /root for install base and tmp dir.
+
+WARNING! The amount of /root disk space required to perform
+this installation is greater than what is available.  Please
+free up at least 3001 kilobytes in /root and attempt this
+installation again.  You may also set the IATEMPDIR environment
+variable to a directory on a disk partition with enough free
+disk space.  To set the variable enter one of the following
+commands at the UNIX command line prompt before running this
+installer again:
+
+- for Bourne shell (sh), ksh, bash and zsh:
+
+     $ IATEMPDIR=/your/free/space/directory
+     $ export IATEMPDIR
+
+- for C shell (csh) and tcsh:
+
+     $ setenv IATEMPDIR /your/free/space/directory

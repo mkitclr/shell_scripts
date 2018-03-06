@@ -1,0 +1,43 @@
+#!/bin/sh
+set -x
+usage () {
+echo "Usage: $1 QMGR name,$2 Group name, $3 profile name for App Qs"
+ exit 1
+}
+
+if [ $# != 3 ]
+then usage
+
+else
+
+#inq=Read,put=Write,set=Execute
+setmqaut -m $1 -n '**' -t queue -g $2 +browse +dsp +inq
+setmqaut -m $1 -n "${3}" -t q -g $2 +browse +dsp +inq +put +get +clr
+setmqaut -m $1 -n ${1}.DLQ -t q -g $2 +browse +dsp +inq +put +get +clr
+setmqaut -m $1 -n SYSTEM.ADMIN.COMMAND.QUEUE -t queue -g $2  +inq +put +browse +get
+setmqaut -m $1 -n SYSTEM.MQEXPLORER.REPLY.MODEL -t queue -g $2 +dsp +inq +get +browse
+setmqaut -m $1 -n SYSTEM.DEFAULT.MODEL.QUEUE -t queue -g $2 +dsp +inq +browse +get
+setmqaut -m $1 -n '**' -t topic -g $2 +dsp
+setmqaut -m $1 -n '**' -t channel -g $2 +dsp
+setmqaut -m $1 -n '**' -t clntconn -g $2 +dsp
+setmqaut -m $1 -n '**' -t authinfo -g $2 +dsp
+setmqaut -m $1 -n '**' -t listener -g $2 +dsp
+setmqaut -m $1 -n '**' -t namelist -g $2 +dsp
+setmqaut -m $1 -n '**' -t process -g $2 +dsp
+setmqaut -m $1 -n '**' -t service -g $2 +dsp
+setmqaut -m $1 -t qmgr -g $2 +dsp +inq +connect
+#BROKER.AUTH read-view broker,config ser props,list EGs. write-set broker,config ser props, create/del EGs and config ser,rename EGs
+setmqaut -m $1 -n SYSTEM.BROKER.AUTH -t queue -g $2 +inq
+setmqaut -m $1 -n SYSTEM.BROKER.DEPLOY.QUEUE -t queue -g $2 +inq +put
+setmqaut -m $1 -n SYSTEM.BROKER.DEPLOY.REPLY -t queue -g $2 +inq +put +get
+#BROKER.AUTH.EG any auth on this should combine with read on BROKER.AUTH. read-read EG props,report resource stats,list Messg flows
+#Write-set EG props, deploy, delete resources from EG Execute-start stop msg flows, start stop resource stats coll., start stop EGs
+setmqaut -m $1 -n SYSTEM.BROKER.AUTH.* -t queue -g $2 +inq
+setmqaut -m $1 -n SYSTEM.BROKER.EXECUTIONGROUP.QUEUE -t queue -g $2 +inq
+#setmqaut -m $1 -n SYSTEM.BROKER.AUTH.TRACING_EG -t queue -g $2 +inq
+setmqaut -m $1 -n SYSTEM.BROKER.EXECUTIONGROUP.REPLY -t queue -g $2 +inq
+echo "refreshing the QMGR:'$1' security for changes to take effect"
+echo "refresh security"|runmqsc $1 |grep AMQ8560
+fi
+
+

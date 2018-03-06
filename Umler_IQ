@@ -1,0 +1,23 @@
+#!/bin/sh
+#Date:10/03/2014-Initial Script-itnxg02
+#loading EHMS Q every 10k as in file 
+# it handles process being killed and it helps to identify "how long app took to process last batch of messages".
+#set -x
+MAILEE1="bhagyesh.shah@railinc.com"
+#MAILEE2="om.parkash@railinc.com"
+
+for i in `ls /var/tmp/Umler_DataLoad_IQ/`
+do
+   depth=30
+   while [ "$depth" != "0" ]
+   do
+      depth=`echo "dis ql(AART.EHMS.DATASUMMARY.2.INBOUND) curdepth"|runmqsc MQAPPDEV2 | grep CURDEPTH | cut -d ')' -f2|cut -d '(' -f2 `
+      sleep 300
+   done
+   mailx -s"Loading next file to AART.EHMS.DATASUMMARY.2.INBOUND" -c $MAILEE1  <<EOF
+file name = $i, Time =`date`.
+EOF
+   /var/mqm/scripts/q -m MQAPPDEV2 -o AART.EHMS.DATASUMMARY.2.INBOUND -f /var/tmp/Umler_DataLoad_IQ/$i
+  mv /var/tmp/Umler_DataLoad_IQ/$i /var/tmp/Umler_DataLoad_IQ_loaded/
+  #echo $i
+done

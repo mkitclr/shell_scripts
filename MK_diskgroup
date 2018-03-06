@@ -1,0 +1,22 @@
+vxdg init       PTA_dg PTA_dgdat01=fas20400_49
+vxdg -g PTA_dg adddisk PTA_dgdat02=fas20400_51
+vxdg -g PTA_dg adddisk PTA_dgdat03=fas20400_50
+vxdg -g PTA_dg adddisk PTA_dglog01=fas20400_52
+vxdg -g PTA_dg adddisk PTA_dglog02=fas20400_53
+vxdg -g PTA_dg adddisk PTA_dglog03=fas20400_54
+vxassist -g PTA_dg make var_PTA_data maxsize layout=stripe ncol=3 PTA_dgdat01 PTA_dgdat03 PTA_dgdat02
+vxassist -g PTA_dg make var_PTA_log maxsize layout=stripe ncol=3 PTA_dglog01 PTA_dglog02 PTA_dglog03
+mkdir /var/PTA
+chmod 000 /var/PTA
+mkdir /var/PTA/data
+chmod 000 /var/PTA/data
+mkdir /var/PTA/log
+chmod 000 /var/PTA/log
+mkfs -t vxfs /dev/vx/rdsk/PTA_dg/var_PTA_data
+mkfs -t vxfs /dev/vx/rdsk/PTA_dg/var_PTA_log
+echo /dev/vx/dsk/PTA_dg/var_PTA_data dalloc_enable=0 >> /etc/vx/tunefs
+echo /dev/vx/dsk/PTA_dg/var_PTA_data max_diskq=16777216 >> /etc/vx/tunefs
+echo /dev/vx/dsk/PTA_dg/var_PTA_data max_direct_iosz=16777216 >> /etc/vx/tunefs
+echo /dev/vx/dsk/PTA_dg/var_PTA_log dalloc_enable=0 >> /etc/vx/tunefs
+echo /dev/vx/dsk/PTA_dg/var_PTA_log max_diskq=16777216 >> /etc/vx/tunefs
+echo /dev/vx/dsk/PTA_dg/var_PTA_log max_direct_iosz=16777216 >> /etc/vx/tunefs

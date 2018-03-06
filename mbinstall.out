@@ -1,0 +1,85 @@
++ INSTALLDIR=/home/itnxg02/MB9/integrationbus_runtime1/
+++ id
+++ cut -d ')' -f1
+++ cut -d '(' -f2
++ '[' root '!=' root ']'
+++ df -k
+++ grep -v /var/
+++ grep -w /var
+++ /bin/awk '{print $3}'
++ SPACE=4204244
++ '[' 4204244 -lt 1100000 ']'
++ '[' 1 = 1 ']'
++ :
++ APPNAME=EVP
++ cd /home/itnxg02/MB9/integrationbus_runtime1/
++ :
+++ /bin/ls -l /var/mqsi
+++ grep -v total
+++ wc -l
++ MQSI_CONTENTS=0
++ '[' 0 = 0 ']'
++ :
++ /home/itnxg02/MB9/integrationbus_runtime1//setuplinuxx64 -i silent -DLICENSE_ACCEPTED=TRUE -DUSER_INSTALL_DIR=/usr/local/opt/EVPiib
+
+
++ ls /var/mqsi/
+common      config                        install.properties  registry        WMBDBE_201.log  XSL
+components  IIB_9000_installer_debug.log  odbc                shared-classes  XML
++ cd /var/mqsi
++ /bin/tar -cvf EVP_mqsi.tar common components config IIB_9000_installer_debug.log install.properties odbc registry shared-classes WMBDBE_201.log XML XSL
+common/
+common/log/
+common/wsrr/
+common/locks/
+common/profiles/
+common/profiles/IE02v201.sh
+common/errors/
+components/
+config/
+IIB_9000_installer_debug.log
+install.properties
+odbc/
+registry/
+registry/LOCK
+shared-classes/
+WMBDBE_201.log
+XML/
+XML/external/
+XSL/
+XSL/external/
++ mv EVP_mqsi.tar /var/EVP/data/mqsi/
++ cd /var/EVP/data/mqsi/
++ tar -xvf EVP_mqsi.tar
+common/
+common/log/
+common/wsrr/
+common/locks/
+common/profiles/
+common/profiles/IE02v201.sh
+common/errors/
+components/
+config/
+IIB_9000_installer_debug.log
+install.properties
+odbc/
+registry/
+registry/LOCK
+shared-classes/
+WMBDBE_201.log
+XML/
+XML/external/
+XSL/
+XSL/external/
+++ EVP
+++ tr '[:uper:]' '[:lower:]'
+./mbinstall: line 50: EVP: command not found
+tr: invalid character class `uper'
++ chown -R user:mqbrkrs common components config EVP_mqsi.tar IIB_9000_installer_debug.log install.properties odbc registry shared-classes WMBDBE_201.log XML XSL
+chown: `user:mqbrkrs': invalid user
++ /bin/rm -rf /var/mqsi/common /var/mqsi/components /var/mqsi/config /var/mqsi/IIB_9000_installer_debug.log /var/mqsi/install.properties /var/mqsi/odbc /var/mqsi/registry /var/mqsi/shared-classes /var/mqsi/WMBDBE_201.log /var/mqsi/XML /var/mqsi/XSL
++ ls /opt/EVPiib/bin/mqsiprofile
+/opt/EVPiib/bin/mqsiprofile
++ sed -i 's/MQSI_WORKPATH\=\/var\/mqsi/MQSI_WORKPATH\=\/var\/$APPNAME\/data\/mqsi/g' /opt/EVPiib/bin/mqsiprofile
++ echo 'Broker Installtion for EVP is successfull'
+

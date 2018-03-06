@@ -1,0 +1,14 @@
+#!/bin/sh
+. /usr/local/scripts/localfunctions
+DATA=home/itnxg02/support_packs/LUNdata.$$
+
+ssh root@fas2020c4 'lun show -v' | while read inline
+do
+if echo $inline | $GREP "online" > /dev/null
+then NAME=`echo $inline | fields 1 | fields -F/ last`
+else if echo $inline | $GREP "Serial#" > /dev/null
+     then SN=`echo $inline | fields 2`
+          echo "$SN $NAME"
+     fi
+fi
+done

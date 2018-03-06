@@ -1,0 +1,40 @@
+#!/bin/sh
+# install mq for app passed as arg1
+#
+INSTALLDIR=~itnxg02/MQ7.5
+
+SPACE=`df -k | grep -v /var/ | grep -w /var | /usr/local/scripts/fields 3`
+if [ "$SPACE" -lt 500000 ]
+then echo "Problem with space on /var.  Only $SPACE available and we need 500000."
+     echo "Install FAILED. Exiting"
+     exit 4
+fi
+ 
+if [ "$#" = 1 ]
+then :
+else echo "Need an argument, the name of an app.  Exiting"
+     exit 2
+fi
+
+APPNAME=$1
+if cd $INSTALLDIR
+then :
+else echo "Can't cd to $INSTALLDIR . Exiting."
+     exit 3
+fi
+
+$INSTALLDIR/mqlicense.sh -accept
+$INSTALLDIR/crtmqpkg $APPNAME
+if ls /var/tmp/mq_rpms/$APPNAME/x86_64/MQ*
+then if cd /var/tmp/mq_rpms/$APPNAME/x86_64
+     then if /bin/rpm --prefix /opt/${APPNAME}mq  -ivh MQSeriesClient_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesJava_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesJRE_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesMan_${APPNAME}-7.5.0-2.x86_64.rpm    MQSeriesRuntime_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesSamples_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesSDK_${APPNAME}-7.5.0-2.x86_64.rpm MQSeriesServer_${APPNAME}-7.5.0-2.x86_64.rpm
+          then su mqm -c "/opt/${APPNAME}mq/bin/mqconfig"
+               echo "$APPNAME installed okay"
+          else echo "FAILED to install $APPNAME.  Please check."
+          fi
+     else echo "Could not cd to /var/tmp/mq_rpms/$APPNAME/x86_64/.  Install FAILED"
+     fi
+else echo "Could not ls /var/tmp/mq_rpms/$APPNAME/x86_64/MQ.  Install FAILED"
+fi
+
+

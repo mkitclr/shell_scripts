@@ -1,0 +1,9 @@
+PATH=$PATH:/usr/local/scripts
+BROKERS=`cat /var/tmp/SN_VX_NAME | grep -v QA | fields 3 | fields -F_ 1 |  sort -u`
+for i in $BROKERS
+do
+USERNAME=`echo $i | tr [:upper:] [:lower:]`user
+echo mkdir -p /var/$i/data/home/$USERNAME
+echo chown ${USERNAME}:mqbrkrs /var/$i/data/home/$USERNAME
+done
+

@@ -1,0 +1,8 @@
+#!/bin/sh
+#here we are refreshing QMGR security on all the QMGRs of this host
+#this should only be executed by the members of mqm group
+
+for i  in `dspmq|cut -d ')' -f1|cut -d '(' -f2`
+do
+ echo "refresh security"|runmqsc $i
+done

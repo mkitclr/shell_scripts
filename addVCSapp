@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# builds an app section for main.cf for an app. and prints it to STDOUT
+# Requires the following args in order
+#  1.  APP name (usually 3 characters long and in all caps)
+#  2.  Port number to be used
+#  3.  VIP to be used
+#  4.  Environment (DEV, QA, TST, PRD)
+#  5. (optional)  If different from the current machine, the name of the host to be run on.
+#      (above will change when multiple machines in cluster)
+#
+#  If 2 or 3 is unknown then put something there like XXXX or XXX.XXX.XXX.XXX that will
+#  be easy to find/replace later
+
+. /usr/local/scripts/localfunctions
+
+TEMPLATE=/var/tmp/VCS_APP_template
+if [ -f $TEMPLATE ]
+then :
+else errorout "No template file /var/tmp/VCS_APP_template for use of this script"
+     errorout "exiting"
+fi
+
+
+usage () {
+errorout ""
+errorout "Usage: addVCSapp APPNAME PORT VIP ENVIRONMENT [ machinename ] "
+exit 1
+}
+
+if [ $# -lt 4 ]
+then errorout "Too few arguments. At least 4 needed."
+     usage
+fi
+
+APP=$1
+PORT=$2
+VIP=$3
+ENVIRON=$4
+shift 4
+
+if [ "$ENVIRON" = "QA" ]
+then MODIFIER="QA"
+else MODIFIER=""
+fi
+
+if [ "X$1" != "X" ]
+then BOXNAME=$1
+else BOXNAME=`hostname`
+fi
+
+APP=`echo $APP | $TR "[:lower:]" "[:upper:]"`
+LOWAPP=`echo $APP | $TR "[:upper:]" "[:lower:]"`
+LOWENV=`echo $ENVIRON | $TR "[:upper:]" "[:lower:]"`
+LOWMOD=`echo $MODIFIER | $TR "[:upper:]" "[:lower:]"`
+
+$SED  -e "s/XXmod/$LOWMOD/g" -e "s/XXenv/$LOWENV/g" -e "s/XXMOD/$MODIFIER/g" -e "s/XXENV/$ENVIRON/g" -e"s/XXAPP/$APP/g" -e"s/XXapp/$LOWAPP/g" -e"s/XXPORT/$PORT/g" -e"s/XXvip/$VIP/g" -e"s/XXmachinename/$BOXNAME/g"  $TEMPLATE
+
+
